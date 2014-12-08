@@ -20,5 +20,5 @@ public class Multiplication implements Operation {
     public String getOperationSign() {
         return "*";
     }
-
+       
 }

@@ -33,9 +33,10 @@ public class CalculatorConsoleApp {
             //------------------------------------------------------------
 
             // check operation sign
-            while (!checkOperation(sc.nextLine())) {
+            while ( ! checkOperation(sc.nextLine())) {
                 System.out.println("There isn't such operation");
             }
+          
             //Read operation
             if ("exit".equalsIgnoreCase(operation)) {
                 System.out.println("See you!");
@@ -46,7 +47,7 @@ public class CalculatorConsoleApp {
             // Read first value
             System.out.println("Input first value");
             Double firstValue;
-            while (!sc.hasNextDouble()) {
+            while ( ! sc.hasNextDouble()) {
                 System.out.println("only Double");
                 sc.next();
             }
@@ -55,19 +56,22 @@ public class CalculatorConsoleApp {
             // Read second value
             System.out.println("Input second value");
             Double secondValue;
-            while (!sc.hasNextDouble()) {
+            while ( ! sc.hasNextDouble()) {
                 System.out.println("only Double");
                 sc.next();
             }
             secondValue = sc.nextDouble();
 
-            //Perform operation
-            System.out.print("\n "
+            try {
+                //Perform operation
+                System.out.print("\n "
                     + firstValue + " "
                     + operation + " "
                     + secondValue + " = "
                     + calculator.perform(operation, firstValue, secondValue) + "\n");
-
+            } catch (ArithmeticException e) {
+                System.out.println(e.getMessage());
+            }
             sc.reset();
             System.out.println("-------------------------");
         } while (true);
