@@ -13,10 +13,12 @@ import java.util.Scanner;
  */
 public class CalculatorConsoleApp {
 
-    static Calculator calculator = new Calculator();
+    static Calculator calculator;
     static String operation = null;
 
     public static void main(String[] args) throws Exception {
+        
+                calculator = new Calculator();
 
         do {
             Scanner sc = new Scanner(System.in);
@@ -87,5 +89,5 @@ public class CalculatorConsoleApp {
         }
         return false;
     }
-
+    
 }

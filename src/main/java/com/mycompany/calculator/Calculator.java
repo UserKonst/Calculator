@@ -5,7 +5,13 @@
  */
 package com.mycompany.calculator;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -14,14 +20,13 @@ import java.util.List;
  */
 public class Calculator {
 
-    List<Operation> list = new ArrayList<>();
-
-    public Calculator() {
-        list.add(new Addition());
-        list.add(new Subtracting());
-        list.add(new Multiplication());
-        list.add(new Division());
+    public List<Operation> list;
+    
+    public Calculator() throws IOException, InstantiationException, IllegalAccessException {
+      list = new ArrayList<>(loadHandlers());
     }
+    
+    
 
     public String[] getOperations() {
         String[] operations = new String[list.size()];
@@ -41,5 +46,27 @@ public class Calculator {
             }
         }
         return null;
+    }
+
+    public final Collection<Operation> loadHandlers() throws IOException, InstantiationException, IllegalAccessException {
+        Collection<ClassInfo> classes = ClassPath.from(Operation.class.getClassLoader()).getTopLevelClasses("com.mycompany.calculator.operations");
+
+        ImmutableList.Builder<Operation> handlers = ImmutableList.<Operation>builder();
+
+        for (ClassInfo classInfo : classes) {
+            Class<?> clazz = classInfo.load();
+            if ( ! Operation.class.isAssignableFrom(clazz)) {
+                continue;
+            }
+
+            // fitler out non instantiable types
+            if (Modifier.isAbstract(clazz.getModifiers()) || Modifier.isInterface(clazz.getModifiers())) {
+                continue;
+            }
+
+            handlers.add((Operation) clazz.newInstance());
+        }
+
+        return handlers.build();
     }
 }
